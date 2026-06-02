@@ -3,179 +3,844 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LOJA ROCKET LABIZZ</title>
+    <title>Cardápio Livre - Gestão Total (Categorias Dinâmicas)</title>
     <style>
+        /* ========== ESTILOS NEXIS PREMIUM (PAINEL) ========== */
+        :root {
+            --bg-principal: #f8f9fa;
+            --bg-card: #ffffff;
+            --texto-principal: #1a1a1a;
+            --texto-secundario: #6c757d;
+            --dourado: #c5a880;
+            --dourado-hover: #b39266;
+            --sucesso: #2ec4b6;
+            --erro: #e71d36;
+            --borda: rgba(0, 0, 0, 0.05);
+            --sombra: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        [data-theme="dark"] {
+            --bg-principal: #0a0a0a;
+            --bg-card: #141414;
+            --texto-principal: #f8f9fa;
+            --texto-secundario: #a0a0a0;
+            --borda: rgba(255, 255, 255, 0.05);
+            --sombra: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         body {
-            background: white;
-            padding: 20px 16px;
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            transition: var(--transicao);
+            padding: 0 20px 40px 20px;
         }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-            background: #000000;
-            padding: 20px 16px;
-            border-radius: 16px;
+        header {
+            background: var(--bg-card);
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+            border-radius: 0 0 24px 24px;
+            box-shadow: var(--sombra);
         }
         .logo {
-            font-size: 1.8rem;
             font-weight: 800;
+            font-size: 1.4rem;
             letter-spacing: -0.5px;
         }
-        .logo-rocket {
-            color: white;
+        .logo .nome-preto { color: var(--texto-principal); }
+        .logo .nome-dourado { color: var(--dourado); }
+        .top-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
-        .logo-labizz {
-            color: #d4af37;
-        }
-        .sub {
-            color: #cccccc;
-            font-size: 0.85rem;
-            margin-top: 8px;
-            font-weight: 500;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 200px));
-            justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eee;
+        .btn-settings {
+            background: none;
+            border: 1px solid var(--borda);
+            color: var(--texto-principal);
+            padding: 10px;
+            border-radius: 50px;
             cursor: pointer;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transicao);
+            font-size: 1.2rem;
         }
-        .product-card:hover {
+        .btn-settings:hover {
+            border-color: var(--dourado);
+            color: var(--dourado);
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 28px;
+            border: 1px solid var(--borda);
+            box-shadow: var(--sombra);
+            padding: 28px;
+            flex: 1 1 450px;
+            transition: var(--transicao);
+        }
+        .card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--dourado);
         }
-        .product-img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            background: #f5f5f5;
+        .card h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--dourado);
+            color: var(--dourado);
+        }
+        .campo {
+            margin-bottom: 20px;
+        }
+        label {
             display: block;
-        }
-        .product-info {
-            padding: 12px 10px 14px;
-        }
-        .product-name {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #111;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            min-height: 2.4rem;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            color: var(--texto-secundario);
         }
-        .btn-buy {
-            display: block;
-            background: #d4af37;
-            color: black;
-            text-decoration: none;
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            transition: all 0.2s;
+        input, select, textarea {
             width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--borda);
+            background: var(--bg-principal);
+            color: var(--texto-principal);
+            font-size: 1rem;
+            transition: var(--transicao);
         }
-        .btn-buy:hover {
-            background: #c2a030;
-            transform: scale(0.98);
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--dourado);
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
         }
-        footer {
-            text-align: center;
-            margin-top: 48px;
+        button {
+            background: linear-gradient(135deg, #111, #222);
+            color: #fff;
+            border: 1px solid var(--dourado);
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transicao);
+            font-size: 0.9rem;
+        }
+        [data-theme="dark"] button {
+            background: linear-gradient(135deg, var(--dourado), #9e825a);
+            color: #000;
+            border: none;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+        }
+        .btn-sec {
+            background: transparent;
+            border: 1px solid var(--dourado);
+            color: var(--dourado);
+        }
+        .flex-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        hr {
+            margin: 25px 0;
+            border: none;
+            height: 1px;
+            background: var(--borda);
+        }
+        .lista-itens {
+            max-height: 320px;
+            overflow-y: auto;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .item-lista {
+            background: var(--bg-principal);
+            padding: 14px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transicao);
+        }
+        .item-lista:hover {
+            border-color: var(--dourado);
+        }
+        .item-lista button {
+            background: transparent;
+            border: 1px solid var(--erro);
+            color: var(--erro);
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+        .item-lista button:hover {
+            background: var(--erro);
+            color: white;
+        }
+        textarea {
+            font-family: monospace;
+            font-size: 0.8rem;
+            height: 360px;
+            background: var(--bg-principal);
+            resize: vertical;
+        }
+        .exemplo-mensagem {
+            background: var(--bg-principal);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid var(--sucesso);
+            font-size: 0.85rem;
+        }
+        small {
+            display: block;
+            margin-top: 15px;
+            color: var(--texto-secundario);
             font-size: 0.7rem;
-            color: #888;
-            border-top: 1px solid #eaeaea;
-            padding-top: 20px;
         }
-        @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 12px;
+        .config-nomes {
+            background: var(--bg-principal);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--borda);
+        }
+        .config-nomes h3 {
+            color: var(--dourado);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        /* Estilo para categorias */
+        .categoria-item {
+            background: var(--bg-principal);
+            border-radius: 20px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--borda);
+        }
+        .categoria-acoes button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 8px;
+            padding: 4px 8px;
+            color: var(--texto-secundario);
+        }
+        .categoria-acoes button:hover { color: var(--dourado); }
+        .categoria-acoes .excluir-cat:hover { color: var(--erro); }
+        @media (max-width: 750px) {
+            body { padding: 0 12px 30px 12px; }
+            header { padding: 15px 20px; }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <header>
+        <div class="logo">
+            <span class="nome-preto" id="nomePretoPainel">CARDÁPIO</span>
+            <span class="nome-dourado" id="nomeDouradoPainel">LIVRE</span>
+        </div>
+        <div class="top-actions">
+            <button class="btn-settings" id="btnToggleTheme" title="Alternar tema">🌓</button>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- CARD ESQUERDA: CONFIGURAÇÃO, CATEGORIAS E PRODUTOS -->
+        <div class="card">
+            <h2>⚙️ Configuração</h2>
+            <div class="campo">
+                <label>📱 Número WhatsApp (com DDD, ex: 5511999999999)</label>
+                <input type="tel" id="numeroWhats" placeholder="5511999999999">
+            </div>
+
+            <!-- Personalização do título -->
+            <div class="config-nomes">
+                <h3>🎨 Personalização do título do cardápio</h3>
+                <div class="campo">
+                    <label>Nome (parte escura / preta)</label>
+                    <input type="text" id="configNomePreto" placeholder="Ex: NEXIS" value="NEXIS">
+                </div>
+                <div class="campo">
+                    <label>Nome (parte dourada)</label>
+                    <input type="text" id="configNomeDourado" placeholder="Ex: PREMIUM" value="PREMIUM">
+                </div>
+            </div>
+
+            <!-- GERENCIAMENTO DE CATEGORIAS -->
+            <h2>🏷️ Gerenciar Categorias</h2>
+            <div class="flex-buttons" style="margin-bottom: 15px;">
+                <button id="btnNovaCategoria">+ Nova Categoria</button>
+            </div>
+            <div id="listaCategoriasContainer" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <hr>
+
+            <!-- ADICIONAR PRODUTO -->
+            <h2>➕ Adicionar novo produto</h2>
+            <div class="campo">
+                <label>Nome do produto</label>
+                <input type="text" id="nomeItem" placeholder="Ex: Produto X">
+            </div>
+            <div class="campo">
+                <label>Preço (R$)</label>
+                <input type="number" step="0.01" id="precoItem" placeholder="0.00">
+            </div>
+            <div class="campo">
+                <label>Categoria</label>
+                <select id="categoriaItemSelect"></select>
+            </div>
+            <button id="btnAdicionarItem">➕ Adicionar produto</button>
+            <hr>
+
+            <!-- LISTA DE PRODUTOS -->
+            <h2>📋 Produtos cadastrados</h2>
+            <div class="lista-itens" id="listaItensContainer"></div>
+            <div class="flex-buttons">
+                <button id="btnSalvarGeral" class="btn-sec">💾 Salvar tudo</button>
+                <button id="btnResetExemplo">🔄 Resetar exemplo</button>
+            </div>
+        </div>
+
+        <!-- CARD DIREITA: HTML GERADO -->
+        <div class="card">
+            <h2>📄 HTML do Cardápio</h2>
+            <p style="margin-bottom: 12px; color: var(--texto-secundario);">Cardápio com categorias dinâmicas, carrinho e envio WhatsApp.</p>
+            <textarea id="htmlCardapioEditor" readonly></textarea>
+            <div class="flex-buttons">
+                <button id="btnAtualizarHTML">🔄 Atualizar HTML</button>
+                <button id="btnCopiarHTML">📋 Copiar HTML</button>
+            </div>
+            <div class="exemplo-mensagem" id="exemploMensagem">
+                <strong>📱 Exemplo de como chegará no WhatsApp:</strong><br>
+                🛒 *NOVO PEDIDO* 🛍️<br>
+                2 Produto Exemplo<br>
+                1 Outro Produto<br>
+                🙏 Muito obrigado! Aguardo confirmação.
+            </div>
+            <small>★ Após qualquer alteração (categorias, produtos, nomes), clique em "Salvar tudo" e depois "Atualizar HTML".</small>
+        </div>
+    </div>
+
+    <script>
+        // ========== ESTRUTURA DE DADOS ==========
+        let db = {
+            numeroWhats: "5511999999999",
+            nomePreto: "NEXIS",
+            nomeDourado: "PREMIUM",
+            categorias: [],      // { id, nome }
+            produtos: []         // { id, nome, preco, categoriaId }
+        };
+
+        // Exemplo inicial limpo (apenas categorias genéricas e produtos)
+        const EXEMPLO_INICIAL = {
+            numeroWhats: "5511999999999",
+            nomePreto: "MEU",
+            nomeDourado: "CARDÁPIO",
+            categorias: [
+                { id: "cat1", nome: "Destaques" },
+                { id: "cat2", nome: "Promoções" },
+                { id: "cat3", nome: "Novidades" }
+            ],
+            produtos: [
+                { id: "prod1", nome: "Produto Exemplo 1", preco: 29.90, categoriaId: "cat1" },
+                { id: "prod2", nome: "Produto Exemplo 2", preco: 49.90, categoriaId: "cat2" },
+                { id: "prod3", nome: "Produto Exemplo 3", preco: 19.90, categoriaId: "cat3" }
+            ]
+        };
+
+        function carregarDoLocalStorage() {
+            const dados = localStorage.getItem("cardapioDinamico");
+            if (dados) {
+                try {
+                    const parsed = JSON.parse(dados);
+                    if (parsed.categorias && parsed.produtos) db = parsed;
+                    else db = JSON.parse(JSON.stringify(EXEMPLO_INICIAL));
+                } catch(e) { db = JSON.parse(JSON.stringify(EXEMPLO_INICIAL)); }
+            } else {
+                db = JSON.parse(JSON.stringify(EXEMPLO_INICIAL));
             }
-            .product-info {
-                padding: 8px 6px;
+            // Garantir campos
+            if (!db.categorias) db.categorias = [];
+            if (!db.produtos) db.produtos = [];
+            if (!db.nomePreto) db.nomePreto = "MEU";
+            if (!db.nomeDourado) db.nomeDourado = "CARDÁPIO";
+            document.getElementById("numeroWhats").value = db.numeroWhats;
+            document.getElementById("configNomePreto").value = db.nomePreto;
+            document.getElementById("configNomeDourado").value = db.nomeDourado;
+            document.getElementById("nomePretoPainel").innerText = db.nomePreto;
+            document.getElementById("nomeDouradoPainel").innerText = db.nomeDourado;
+            renderizarCategorias();
+            renderizarSelectCategorias();
+            renderizarListaProdutos();
+            gerarHtmlCardapio();
+        }
+
+        function salvarNoLocalStorage() {
+            localStorage.setItem("cardapioDinamico", JSON.stringify(db));
+            document.getElementById("nomePretoPainel").innerText = db.nomePreto;
+            document.getElementById("nomeDouradoPainel").innerText = db.nomeDourado;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if(m === '&') return '&amp;';
+                if(m === '<') return '&lt;';
+                if(m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // ========== GERENCIAMENTO DE CATEGORIAS ==========
+        function renderizarCategorias() {
+            const container = document.getElementById("listaCategoriasContainer");
+            if (!container) return;
+            if (db.categorias.length === 0) {
+                container.innerHTML = "<p style='padding:10px; color:var(--texto-secundario);'>Nenhuma categoria. Clique em 'Nova Categoria'.</p>";
+                return;
             }
-            .product-name {
-                font-size: 0.75rem;
+            container.innerHTML = db.categorias.map(cat => `
+                <div class="categoria-item" data-id="${cat.id}">
+                    <span><strong>${escapeHtml(cat.nome)}</strong></span>
+                    <div class="categoria-acoes">
+                        <button class="editar-cat" title="Editar nome">✏️</button>
+                        <button class="excluir-cat" title="Excluir categoria">🗑️</button>
+                    </div>
+                </div>
+            `).join("");
+            // Eventos
+            document.querySelectorAll(".editar-cat").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const div = btn.closest(".categoria-item");
+                    const id = div.dataset.id;
+                    const cat = db.categorias.find(c => c.id === id);
+                    if (cat) {
+                        const novoNome = prompt("Novo nome da categoria:", cat.nome);
+                        if (novoNome && novoNome.trim()) {
+                            cat.nome = novoNome.trim();
+                            salvarNoLocalStorage();
+                            renderizarCategorias();
+                            renderizarSelectCategorias();
+                            renderizarListaProdutos();
+                            gerarHtmlCardapio();
+                        }
+                    }
+                });
+            });
+            document.querySelectorAll(".excluir-cat").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const div = btn.closest(".categoria-item");
+                    const id = div.dataset.id;
+                    const produtosRelacionados = db.produtos.filter(p => p.categoriaId === id);
+                    if (produtosRelacionados.length > 0) {
+                        if (!confirm(`A categoria possui ${produtosRelacionados.length} produto(s). Excluir também moverá esses produtos para "Sem categoria"?`)) return;
+                        // Mover produtos para "Sem categoria" se existir, ou criar
+                        let semCategoria = db.categorias.find(c => c.nome === "Sem categoria");
+                        if (!semCategoria) {
+                            semCategoria = { id: "sem_cat_" + Date.now(), nome: "Sem categoria" };
+                            db.categorias.push(semCategoria);
+                        }
+                        db.produtos.forEach(p => { if (p.categoriaId === id) p.categoriaId = semCategoria.id; });
+                    }
+                    db.categorias = db.categorias.filter(c => c.id !== id);
+                    salvarNoLocalStorage();
+                    renderizarCategorias();
+                    renderizarSelectCategorias();
+                    renderizarListaProdutos();
+                    gerarHtmlCardapio();
+                });
+            });
+        }
+
+        function renderizarSelectCategorias() {
+            const select = document.getElementById("categoriaItemSelect");
+            if (!select) return;
+            if (db.categorias.length === 0) {
+                select.innerHTML = "<option value=''>-- Crie uma categoria primeiro --</option>";
+                return;
             }
-            .btn-buy {
-                font-size: 0.65rem;
-                padding: 8px 0;
+            select.innerHTML = db.categorias.map(cat => `<option value="${cat.id}">${escapeHtml(cat.nome)}</option>`).join("");
+        }
+
+        function adicionarCategoria() {
+            const nome = prompt("Nome da nova categoria:");
+            if (nome && nome.trim()) {
+                const novaId = "cat_" + Date.now();
+                db.categorias.push({ id: novaId, nome: nome.trim() });
+                salvarNoLocalStorage();
+                renderizarCategorias();
+                renderizarSelectCategorias();
+                renderizarListaProdutos();
+                gerarHtmlCardapio();
             }
-            .logo {
-                font-size: 1.4rem;
+        }
+
+        // ========== GERENCIAMENTO DE PRODUTOS ==========
+        function renderizarListaProdutos() {
+            const container = document.getElementById("listaItensContainer");
+            if (!container) return;
+            if (db.produtos.length === 0) {
+                container.innerHTML = "<p style='padding:20px; text-align:center; color:var(--texto-secundario);'>Nenhum produto cadastrado.</p>";
+                return;
             }
+            // Mapear categoria
+            const catMap = {};
+            db.categorias.forEach(c => catMap[c.id] = c.nome);
+            container.innerHTML = db.produtos.map(prod => {
+                const catNome = catMap[prod.categoriaId] || "Sem categoria";
+                return `
+                    <div class="item-lista" data-id="${prod.id}">
+                        <div>
+                            <strong>${escapeHtml(prod.nome)}</strong><br>
+                            <small>Categoria: ${escapeHtml(catNome)} | Preço: R$ ${prod.preco.toFixed(2)}</small>
+                        </div>
+                        <div>
+                            <button class="editar-produto" data-id="${prod.id}" style="margin-right:5px;">✏️ Editar</button>
+                            <button class="remover-produto" data-id="${prod.id}">Remover</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+            // Editar produto
+            document.querySelectorAll(".editar-produto").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = btn.dataset.id;
+                    const prod = db.produtos.find(p => p.id === id);
+                    if (prod) {
+                        const novoNome = prompt("Novo nome do produto:", prod.nome);
+                        const novoPreco = parseFloat(prompt("Novo preço (R$):", prod.preco));
+                        if (novoNome && novoNome.trim()) prod.nome = novoNome.trim();
+                        if (!isNaN(novoPreco) && novoPreco > 0) prod.preco = novoPreco;
+                        salvarNoLocalStorage();
+                        renderizarListaProdutos();
+                        gerarHtmlCardapio();
+                    }
+                });
+            });
+            document.querySelectorAll(".remover-produto").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = btn.dataset.id;
+                    if (confirm("Remover produto permanentemente?")) {
+                        db.produtos = db.produtos.filter(p => p.id !== id);
+                        salvarNoLocalStorage();
+                        renderizarListaProdutos();
+                        gerarHtmlCardapio();
+                    }
+                });
+            });
+        }
+
+        function adicionarProduto() {
+            const nome = document.getElementById("nomeItem").value.trim();
+            const preco = parseFloat(document.getElementById("precoItem").value);
+            const categoriaId = document.getElementById("categoriaItemSelect").value;
+            if (!nome || isNaN(preco) || preco <= 0) { alert("Preencha nome e preço válido."); return; }
+            if (!categoriaId || categoriaId === "") { alert("Selecione uma categoria válida."); return; }
+            const novoId = "prod_" + Date.now() + "_" + Math.random().toString(36);
+            db.produtos.push({ id: novoId, nome, preco, categoriaId });
+            salvarNoLocalStorage();
+            renderizarListaProdutos();
+            gerarHtmlCardapio();
+            document.getElementById("nomeItem").value = "";
+            document.getElementById("precoItem").value = "";
+        }
+
+        // ========== GERAR HTML DO CARDÁPIO (COM CATEGORIAS DINÂMICAS) ==========
+        function gerarHtmlCardapio() {
+            const numeroWhats = db.numeroWhats;
+            const nomePreto = db.nomePreto || "CARDÁPIO";
+            const nomeDourado = db.nomeDourado || "LIVRE";
+            const categoriasOrdenadas = [...db.categorias];
+            // Mapear produtos por categoria
+            const produtosPorCategoria = {};
+            db.produtos.forEach(prod => {
+                if (!produtosPorCategoria[prod.categoriaId]) produtosPorCategoria[prod.categoriaId] = [];
+                produtosPorCategoria[prod.categoriaId].push(prod);
+            });
+
+            const gerarCards = (produtos) => {
+                return produtos.map(prod => `
+                    <div class="produto-card">
+                        <div class="produto-info">${escapeHtml(prod.nome)}</div>
+                        <div class="produto-preco">R$ ${prod.preco.toFixed(2)}</div>
+                        <div class="quantidade-controle">
+                            <input type="number" min="0" value="1" step="1" class="qtd-input" data-id="${prod.id}">
+                            <button class="btn-add" data-id="${prod.id}" data-nome="${escapeHtml(prod.nome)}" data-preco="${prod.preco}">➕ Adicionar</button>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            const secoesHtml = categoriasOrdenadas.map(cat => {
+                const prods = produtosPorCategoria[cat.id] || [];
+                if (prods.length === 0) return '';
+                return `
+                    <div class="secao-cardapio">
+                        <h2>📌 ${escapeHtml(cat.nome)}</h2>
+                        <div class="itens-grid">${gerarCards(prods)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const htmlGerado = `<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>${escapeHtml(nomePreto)} ${escapeHtml(nomeDourado)} - Cardápio</title>
+    <style>
+        /* ========== ESTILO NEXIS PREMIUM PARA O CARDÁPIO ========== */
+        :root {
+            --bg-principal: #f8f9fa;
+            --bg-card: #ffffff;
+            --texto-principal: #1a1a1a;
+            --texto-secundario: #6c757d;
+            --dourado: #c5a880;
+            --dourado-hover: #b39266;
+            --sucesso: #2ec4b6;
+            --erro: #e71d36;
+            --borda: rgba(0, 0, 0, 0.05);
+            --sombra: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background: var(--bg-principal); color: var(--texto-principal); padding: 20px; min-height: 100vh; transition: var(--transicao); }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--bg-card); border-radius: 48px; box-shadow: var(--sombra); overflow: hidden; border: 1px solid var(--borda); }
+        header { background: var(--bg-card); padding: 25px 30px; text-align: center; border-bottom: 2px solid var(--dourado); }
+        .logo-cardapio { font-weight: 800; font-size: 2rem; letter-spacing: -0.5px; }
+        .logo-cardapio .preto { color: var(--texto-principal); }
+        .logo-cardapio .dourado { color: var(--dourado); }
+        header p { color: var(--texto-secundario); margin-top: 8px; font-size: 0.9rem; }
+        .cardapio-area { padding: 30px 30px 0 30px; }
+        .secao-cardapio { background: var(--bg-card); border-radius: 32px; margin-bottom: 30px; padding: 20px; border: 1px solid var(--borda); box-shadow: var(--sombra); }
+        .secao-cardapio h2 { font-size: 1.8rem; border-left: 6px solid var(--dourado); padding-left: 15px; margin-bottom: 20px; color: var(--dourado); }
+        .itens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .produto-card { background: var(--bg-principal); border-radius: 24px; padding: 12px 15px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--borda); transition: var(--transicao); }
+        .produto-card:hover { border-color: var(--dourado); transform: translateY(-2px); }
+        .produto-info { flex: 2; font-weight: 600; }
+        .produto-preco { font-weight: bold; background: var(--bg-card); padding: 4px 12px; border-radius: 40px; color: var(--dourado); border: 1px solid var(--dourado); font-size: 0.9rem; }
+        .quantidade-controle { display: flex; align-items: center; gap: 8px; background: var(--bg-card); padding: 4px 10px; border-radius: 50px; border: 1px solid var(--borda); }
+        .quantidade-controle input { width: 55px; text-align: center; border: none; font-size: 1rem; font-weight: bold; padding: 6px 0; background: transparent; outline: none; color: var(--texto-principal); }
+        .btn-add { background: linear-gradient(135deg, #111, #222); border: 1px solid var(--dourado); color: #fff; padding: 6px 14px; border-radius: 40px; font-weight: bold; cursor: pointer; transition: var(--transicao); font-size: 0.8rem; }
+        .btn-add:hover { opacity: 0.9; transform: scale(0.97); }
+        .carrinho-wrapper { background: var(--bg-principal); margin: 0 30px 30px 30px; border-radius: 40px; border: 1px solid var(--borda); box-shadow: var(--sombra); overflow: hidden; }
+        .carrinho-header { background: var(--bg-card); padding: 18px 25px; border-bottom: 1px solid var(--borda); }
+        .carrinho-header h3 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; color: var(--dourado); }
+        .carrinho-lista { padding: 15px 20px; max-height: 320px; overflow-y: auto; }
+        .carrinho-item { background: var(--bg-card); border-radius: 30px; padding: 12px 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; border: 1px solid var(--borda); }
+        .carrinho-item-info { flex: 1; }
+        .carrinho-item-nome { font-weight: bold; }
+        .carrinho-item-qtd { font-size: 0.8rem; color: var(--texto-secundario); margin-top: 4px; }
+        .carrinho-item-preco { font-weight: bold; color: var(--dourado); font-size: 1rem; }
+        .remover-item { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--erro); margin-left: 12px; transition: 0.1s; padding: 0 6px; }
+        .remover-item:hover { transform: scale(1.1); }
+        .carrinho-footer { padding: 18px 25px 25px 25px; background: var(--bg-card); border-top: 2px dashed var(--borda); }
+        .total-pedido-box { background: var(--bg-principal); border-radius: 60px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border: 1px solid var(--dourado); font-weight: bold; font-size: 1.2rem; }
+        .total-label { color: var(--texto-principal); }
+        .total-valor-final { background: var(--dourado); color: #000; padding: 8px 28px; border-radius: 50px; font-size: 1.6rem; font-weight: bold; letter-spacing: 1px; }
+        .botoes-acao { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-finalizar { flex: 2; background: linear-gradient(135deg, #2ec4b6, #1f9e91); color: white; font-size: 1.2rem; font-weight: bold; padding: 14px 0; border: none; border-radius: 50px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-finalizar:hover { transform: scale(0.98); opacity: 0.9; }
+        .btn-limpar { flex: 1; background: linear-gradient(135deg, #e71d36, #b81228); font-size: 1rem; padding: 14px 0; }
+        footer { text-align: center; padding: 18px; background: var(--bg-card); font-size: 0.8rem; color: var(--texto-secundario); border-top: 1px solid var(--borda); }
+        .carrinho-vazio-msg { text-align: center; padding: 30px; color: var(--texto-secundario); background: var(--bg-card); border-radius: 40px; }
+        @media (max-width: 750px) {
+            body { padding: 12px; }
+            .cardapio-area { padding: 20px 20px 0 20px; }
+            .carrinho-wrapper { margin: 0 20px 25px 20px; }
+            .total-valor-final { font-size: 1.3rem; padding: 6px 18px; }
+            .logo-cardapio { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">
-            <span class="logo-rocket">ROCKET</span> <span class="logo-labizz">LABIZZ</span>
+    <header>
+        <div class="logo-cardapio">
+            <span class="preto">${escapeHtml(nomePreto)}</span>
+            <span class="dourado">${escapeHtml(nomeDourado)}</span>
         </div>
-        <div class="sub">Loja oficial — qualidade e estilo</div>
+        <p>Escolha os produtos, defina a quantidade e monte seu pedido</p>
+    </header>
+
+    <div class="cardapio-area">
+        ${secoesHtml || '<div style="text-align:center; padding:40px;">Nenhum produto disponível no momento.</div>'}
     </div>
-    <div class="products-grid" id="productsGrid"></div>
-    <footer>© 2025 LOJA ROCKET LABIZZ - Todos os direitos reservados</footer>
+
+    <div class="carrinho-wrapper">
+        <div class="carrinho-header">
+            <h3>🛒 Seu pedido atual</h3>
+        </div>
+        <div class="carrinho-lista" id="carrinhoLista">
+            <div class="carrinho-vazio-msg">✨ Nenhum item adicionado. Adicione produtos acima ✨</div>
+        </div>
+        <div class="carrinho-footer">
+            <div class="total-pedido-box">
+                <span class="total-label">💰 TOTAL DO PEDIDO</span>
+                <span class="total-valor-final" id="totalGeralValor">R$ 0,00</span>
+            </div>
+            <div class="botoes-acao">
+                <button class="btn-finalizar" id="finalizarBtn">📲 FINALIZAR PEDIDO → WhatsApp</button>
+                <button class="btn-finalizar btn-limpar" id="limparCarrinhoBtn">🗑️ LIMPAR CARRINHO</button>
+            </div>
+        </div>
+    </div>
+    <footer>Adicione quantos itens quiser! O valor final é apenas para referência.</footer>
 </div>
 
 <script>
-    // ===================================================
-    // PRODUTOS - as imagens podem ser URLs ou base64
-    // ===================================================
-    let produtos = [
-        {
-            "nome": "Cordão com Cruz Ortodoxa",
-            "imagem": "https://ae01.alicdn.com/kf/Sd6fb8113d6d6428dbecdbccd47f6adabt.jpg_350x350.jpg",
-            "link": "https://s.click.aliexpress.com/e/_c3MuqDQ9"
-        }
-    ];
+    let carrinho = [];
 
-    function renderizarProdutos() {
-        const grid = document.getElementById("productsGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
-        produtos.forEach(prod => {
-            const card = document.createElement("div");
-            card.className = "product-card";
-            card.innerHTML = `
-                <img class="product-img" src="${prod.imagem}" alt="${prod.nome}" loading="lazy">
-                <div class="product-info">
-                    <div class="product-name">${prod.nome}</div>
-                    <a href="${prod.link}" target="_blank" rel="noopener noreferrer" class="btn-buy">COMPRAR AGORA</a>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+    function addToCart(produto, quantidade) {
+        if (quantidade <= 0) return;
+        const idx = carrinho.findIndex(item => item.id === produto.id);
+        if (idx !== -1) carrinho[idx].quantidade += quantidade;
+        else carrinho.push({ id: produto.id, nome: produto.nome, precoUnit: produto.precoUnit, quantidade });
+        renderCarrinho();
+        atualizarTotal();
     }
-    renderizarProdutos();
-</script>
+
+    function removerItem(index) { carrinho.splice(index, 1); renderCarrinho(); atualizarTotal(); }
+    function limparCarrinho() { carrinho = []; renderCarrinho(); atualizarTotal(); }
+
+    function renderCarrinho() {
+        const container = document.getElementById("carrinhoLista");
+        if (!container) return;
+        if (carrinho.length === 0) { container.innerHTML = '<div class="carrinho-vazio-msg">🍽️ Nenhum item adicionado. Escolha seus produtos acima 🍽️</div>'; return; }
+        let html = '';
+        carrinho.forEach((item, idx) => {
+            const subtotal = item.precoUnit * item.quantidade;
+            html += \`
+                <div class="carrinho-item">
+                    <div class="carrinho-item-info">
+                        <div class="carrinho-item-nome">\${escapeHtml(item.nome)}</div>
+                        <div class="carrinho-item-qtd">\${item.quantidade}x • R$ \${item.precoUnit.toFixed(2)}</div>
+                    </div>
+                    <div class="carrinho-item-preco">R$ \${subtotal.toFixed(2)}</div>
+                    <button class="remover-item" data-index="\${idx}" aria-label="Remover item">🗑️</button>
+                </div>
+            \`;
+        });
+        container.innerHTML = html;
+        document.querySelectorAll('.remover-item').forEach(btn => btn.addEventListener('click', (e) => { removerItem(parseInt(btn.dataset.index)); }));
+    }
+
+    function atualizarTotal() {
+        const total = carrinho.reduce((acc, i) => acc + (i.precoUnit * i.quantidade), 0);
+        const totalSpan = document.getElementById("totalGeralValor");
+        if (totalSpan) totalSpan.innerText = "R$ " + total.toFixed(2);
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
+
+    function finalizarPedido() {
+        if (carrinho.length === 0) { alert("🛒 Carrinho vazio! Adicione produtos."); return; }
+        let mensagem = "🛒 *NOVO PEDIDO* 🛍️\\n";
+        carrinho.forEach(item => { mensagem += \`\${item.quantidade} \${item.nome}\\n\`; });
+        mensagem += "🙏 Muito obrigado! Aguardo confirmação.";
+        let numero = "${numeroWhats}".replace(/\\D/g, '');
+        if (numero && numero.length >= 10) window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent(mensagem), '_blank');
+        else alert("Número de WhatsApp não configurado.");
+    }
+
+    document.querySelectorAll(".btn-add").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const card = btn.closest(".produto-card");
+            const qtdInput = card.querySelector(".qtd-input");
+            let qtd = parseInt(qtdInput.value);
+            if (isNaN(qtd) || qtd < 1) qtd = 1;
+            addToCart({ id: btn.dataset.id, nome: btn.dataset.nome, precoUnit: parseFloat(btn.dataset.preco) }, qtd);
+            qtdInput.value = 1;
+        });
+    });
+    document.getElementById("finalizarBtn")?.addEventListener("click", finalizarPedido);
+    document.getElementById("limparCarrinhoBtn")?.addEventListener("click", limparCarrinho);
+    atualizarTotal();
+<\/script>
+</body>
+</html>`;
+            document.getElementById("htmlCardapioEditor").value = htmlGerado;
+        }
+
+        // ========== EVENTOS PRINCIPAIS ==========
+        document.getElementById("btnNovaCategoria").addEventListener("click", adicionarCategoria);
+        document.getElementById("btnAdicionarItem").addEventListener("click", adicionarProduto);
+        document.getElementById("btnSalvarGeral").addEventListener("click", () => {
+            db.numeroWhats = document.getElementById("numeroWhats").value.trim();
+            db.nomePreto = document.getElementById("configNomePreto").value.trim() || "CARDÁPIO";
+            db.nomeDourado = document.getElementById("configNomeDourado").value.trim() || "LIVRE";
+            salvarNoLocalStorage();
+            renderizarCategorias();
+            renderizarSelectCategorias();
+            renderizarListaProdutos();
+            gerarHtmlCardapio();
+            alert("Configurações salvas! HTML atualizado.");
+        });
+        document.getElementById("btnAtualizarHTML").addEventListener("click", () => gerarHtmlCardapio());
+        document.getElementById("btnCopiarHTML").addEventListener("click", async () => {
+            await navigator.clipboard.writeText(document.getElementById("htmlCardapioEditor").value);
+            alert("HTML do cardápio copiado!");
+        });
+        document.getElementById("btnResetExemplo").addEventListener("click", () => {
+            db = JSON.parse(JSON.stringify(EXEMPLO_INICIAL));
+            salvarNoLocalStorage();
+            renderizarCategorias();
+            renderizarSelectCategorias();
+            renderizarListaProdutos();
+            gerarHtmlCardapio();
+            alert("Cardápio redefinido para o exemplo inicial.");
+        });
+
+        // TEMA CLARO/ESCURO
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const novo = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', novo);
+            localStorage.setItem('cardapio_theme', novo);
+        }
+        document.getElementById("btnToggleTheme").addEventListener("click", toggleTheme);
+        const savedTheme = localStorage.getItem('cardapio_theme');
+        if (savedTheme) document.body.setAttribute('data-theme', savedTheme);
+        else document.body.setAttribute('data-theme', 'dark');
+
+        carregarDoLocalStorage();
+    </script>
 </body>
 </html>
